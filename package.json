@@ -5,7 +5,7 @@
     "ng": "ng",
     "start": "ng serve",
     "backend": "node server/index.js",
-    "build": "ng build",
+    "build": "npx ng build --configuration production",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "dev": "node index.js"
