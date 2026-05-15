@@ -1,0 +1,129 @@
+<div class="lessons-page">
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <a routerLink="/" class="back-link">&lt;- Bosh sahifa</a>
+      <h2 class="sidebar-title">Kurs dasturi</h2>
+
+      <div class="overall-progress">
+        <div class="progress-info">
+          <span class="progress-label">Umumiy progress</span>
+          <span class="progress-val">{{ completedCount }}/{{ totalLessons }}</span>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill" [style.width.%]="progress"></div>
+        </div>
+        <div class="xp-info">
+          <span>{{ xp }} XP</span>
+          <span>{{ progress }}% bajarildi</span>
+        </div>
+      </div>
+    </div>
+
+    <nav class="module-nav">
+      @for (module of modules; track module.id) {
+      <button class="module-tab" type="button" [class.active]="activeModuleId === module.id"
+        [class.locked]="!isModuleAccessible(module.id)" [disabled]="!isModuleAccessible(module.id)"
+        (click)="selectModule(module.id)">
+        <div class="module-tab-icon">{{ module.icon }}</div>
+        <div class="module-tab-info">
+          <span class="module-tab-name">{{ module.title.split(' - ')[0].trim() }}</span>
+          <span class="module-tab-meta">{{ getModuleCompleted(module.id) }}/{{ module.lessons.length }}</span>
+        </div>
+        <div class="module-tab-progress">
+          <div class="mini-bar">
+            <div class="mini-fill" [style.width.%]="getModuleProgress(module.id)"></div>
+          </div>
+        </div>
+      </button>
+      }
+    </nav>
+  </aside>
+
+  <main class="lessons-main">
+    @if (activeModule) {
+    <div class="module-header">
+      <div class="module-icon-lg" [style.background]="activeModule.color + '15'">
+        {{ activeModule.icon }}
+      </div>
+      <div class="module-header-info">
+        <h1>{{ activeModule.title }}</h1>
+        <p>{{ activeModule.description }}</p>
+        <div class="module-stats">
+          <span class="tag">{{ activeModule.lessons.length }} dars</span>
+          <span class="tag">{{ activeModule.totalHours }}</span>
+          <span class="tag">{{ getModuleCompleted(activeModule.id) }} bajarildi</span>
+        </div>
+      </div>
+    </div>
+
+    @if (activeModule.project) {
+    <section class="module-project-overview">
+      <div class="project-overview-card">
+        <div class="project-heading">
+          <h3>Modul loyihasi: {{ activeModule.project.title }}</h3>
+          <p>{{ activeModule.project.description }}</p>
+        </div>
+        <div class="project-meta">
+          <span class="tag">{{ activeModule.project.totalPoints }} ballik baho</span>
+          <span class="tag">{{ activeModule.project.requirements.length }} talab</span>
+        </div>
+        <div class="project-info">
+          <h4>Talablar</h4>
+          <ul>
+            @for (req of activeModule.project.requirements; track req) {
+            <li>{{ req }}</li>
+            }
+          </ul>
+          <h4>Rubrika</h4>
+          <div class="project-rubric">
+            @for (item of activeModule.project.rubric; track item.criterion) {
+            <div class="project-rubric-item">
+              <span>{{ item.criterion }}</span>
+              <strong>{{ item.points }} ball</strong>
+            </div>
+            }
+          </div>
+        </div>
+      </div>
+    </section>
+    }
+
+    <div class="lessons-list">
+      @for (lesson of activeModule.lessons; track lesson.id; let i = $index) {
+      <a class="lesson-card" [class.completed]="isCompleted(lesson.id)" [class.locked]="!isLessonAccessible(lesson.id)"
+        [routerLink]="isLessonAccessible(lesson.id) ? ['/lesson', activeModule.id, lesson.id] : null"
+        [attr.aria-disabled]="!isLessonAccessible(lesson.id)">
+        <div class="lesson-num">
+          @if (isCompleted(lesson.id)) {
+          <span class="check">OK</span>
+          } @else {
+          <span>{{ i + 1 }}</span>
+          }
+        </div>
+
+        <div class="lesson-info">
+          <h3 class="lesson-title">{{ lesson.title }}</h3>
+          <p class="lesson-desc">{{ lesson.description }}</p>
+          <div class="lesson-meta">
+            <span>{{ lesson.duration }}</span>
+            <span>Video link</span>
+            <span>Topshiriq bor</span>
+          </div>
+          @if (!isLessonAccessible(lesson.id) && !isCompleted(lesson.id)) {
+          <div class="lesson-lock-note">Oldingi darsni tugatganingizdan so‘ng bu dars ochiladi.</div>
+          }
+        </div>
+
+        <div class="lesson-arrow">
+          @if (isLessonAccessible(lesson.id) || isCompleted(lesson.id)) {
+          ->
+          } @else {
+          🔒
+          }
+        </div>
+      </a>
+      }
+    </div>
+    }
+  </main>
+</div>

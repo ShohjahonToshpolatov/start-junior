@@ -1,0 +1,457 @@
+@if (lesson && module) {
+<div class="lesson-detail">
+  <div class="lesson-topbar">
+    <div class="topbar-left">
+      <a [routerLink]="['/lessons', module.id]" class="back-btn">&lt;- Orqaga</a>
+      <div class="breadcrumb">
+        <span>{{ module.icon }} {{ module.title.split(' - ')[0].trim() }}</span>
+        <span class="sep">/</span>
+        <span class="current">{{ lesson.title }}</span>
+      </div>
+    </div>
+    <div class="topbar-right">
+      <span class="duration">{{ lesson.duration }}</span>
+      @if (isCompleted) {
+      <span class="completed-badge">Bajarildi</span>
+      }
+    </div>
+  </div>
+
+  <div class="lesson-layout container">
+    <article class="lesson-content">
+      <h1 class="lesson-title">{{ lesson.title }}</h1>
+      <p class="lesson-intro">{{ lesson.description }}</p>
+
+      <div class="video-card">
+        <div>
+          <span class="video-label">Video dars</span>
+          <h2>{{ lesson.videoTitle }}</h2>
+          <p>Aniq video hali biriktirilmagan bo'lsa, shu link orqali mos Uzbek video darsni tanlab qo'yish mumkin.</p>
+        </div>
+        <a class="btn-outline" [href]="lesson.videoUrl" target="_blank" rel="noopener">Videoni ochish</a>
+      </div>
+
+      <div class="tabs">
+        <button class="tab" [class.active]="activeTab === 'theory'" type="button" (click)="setTab('theory')">
+          Nazariya
+        </button>
+        <button class="tab" [class.active]="activeTab === 'code'" type="button" (click)="setTab('code')">
+          Kod misoli
+        </button>
+        <button class="tab" [class.active]="activeTab === 'task'" type="button" (click)="setTab('task')">
+          Topshiriq
+        </button>
+        <button class="tab" [class.active]="activeTab === 'homework'" type="button" (click)="setTab('homework')">
+          Uyga vazifa
+        </button>
+        @if (lesson.exercises && lesson.exercises.length > 0) {
+        <button class="tab" [class.active]="activeTab === 'exercises'" type="button" (click)="setTab('exercises')">
+          Mashqlar ({{ lesson.exercises.length }})
+        </button>
+        }
+      </div>
+
+      @if (activeTab === 'theory') {
+      <div class="tab-content theory-content">
+        <div class="theory-text">
+          @for (line of lesson.theory.split('\n'); track $index) {
+          @if (line.trim().startsWith('-')) {
+          <div class="theory-bullet">
+            <span class="bullet-dot">-</span>
+            <span>{{ line.trim().substring(1).trim() }}</span>
+          </div>
+          } @else if (line.trim() === '') {
+          <br>
+          } @else {
+          <p>{{ line }}</p>
+          }
+          }
+        </div>
+
+        <div class="theory-actions">
+          <button class="btn-primary" type="button" (click)="setTab('code')">
+            Kod misoliga o'tish ->
+          </button>
+        </div>
+      </div>
+      }
+
+      @if (activeTab === 'code') {
+      <div class="tab-content">
+        <div class="code-block">
+          <div class="code-block-header">
+            <div class="dots">
+              <span class="dot red"></span>
+              <span class="dot yellow"></span>
+              <span class="dot green"></span>
+            </div>
+            <span class="code-lang">Kod namunasi</span>
+            <button class="copy-btn" type="button" (click)="copyCode()">Nusxa</button>
+          </div>
+          <pre class="code-content"><code>{{ lesson.codeExample }}</code></pre>
+        </div>
+
+        <div class="code-tip">
+          <span>Tip</span>
+          <p>Bu kodni VS Code ichida yozib, Live Server yoki terminal orqali sinab ko'ring.</p>
+        </div>
+
+        <div class="theory-actions">
+          <button class="btn-primary" type="button" (click)="setTab('task')">
+            Topshiriqqa o'tish ->
+          </button>
+        </div>
+      </div>
+      }
+
+      @if (activeTab === 'task') {
+      <div class="tab-content">
+        <div class="task-card">
+          <div class="task-header">
+            <div>
+              <span class="task-icon">Task</span>
+              <h3>Amaliy topshiriq</h3>
+            </div>
+            @if (lesson.difficulty) {
+            <span class="difficulty-badge" [class]="lesson.difficulty">
+              {{ lesson.difficulty === 'oson' ? '🟢 Oson' : lesson.difficulty === 'orta' ? '🟡 O\'rta' : '🔴 Qiyin' }}
+            </span>
+            }
+          </div>
+          <p class="task-text">{{ lesson.task }}</p>
+        </div>
+
+        <div class="hint-card">
+          <button class="hint-toggle" type="button" (click)="showHint = !showHint">
+            {{ showHint ? 'Maslahatni yashirish' : 'Maslahatni ko\'rish' }}
+          </button>
+          @if (showHint) {
+          <div class="hint-text">{{ lesson.taskHint }}</div>
+          }
+        </div>
+
+        <!-- Completion Progress -->
+        <div class="completion-progress">
+          <div class="progress-header">
+            <h4>Topshiriqni 100% tugating:</h4>
+            <span class="progress-percent">{{ getCompletionPercentage() }}%</span>
+          </div>
+          <div class="progress-bar">
+            <div class="progress-fill" [style.width.%]="getCompletionPercentage()"></div>
+          </div>
+        </div>
+
+        <!-- Requirements Checklist -->
+        <div class="requirements-checklist">
+          <h4>Talab etilgan shartlar:</h4>
+          @for (req of (completionRequirements | keyvalue); track req.key) {
+          <div class="requirement-item" [class.completed]="req.value">
+            <button type="button" class="requirement-checkbox" [class.checked]="req.value"
+              (click)="toggleRequirement(req.key)">
+              @if (req.value) {
+              <span class="check-mark">✓</span>
+              } @else {
+              <span class="check-empty"></span>
+              }
+            </button>
+            <label class="requirement-label">{{ req.key }}</label>
+          </div>
+          }
+        </div>
+
+        <!-- Exercises Section in Task Tab -->
+        @if (lesson.exercises && lesson.exercises.length > 0) {
+        <div class="exercises-in-task">
+          <h4>Darsga biriktirilgan {{ lesson.exercises.length }} ta mashq:</h4>
+          <div class="mini-exercises-list">
+            @for (exercise of lesson.exercises; track exercise.id; let i = $index) {
+            <div class="mini-exercise" [class.completed]="isExerciseCompleted(exercise.id)">
+              <span class="ex-number">{{ i + 1 }}</span>
+              <span class="ex-title">{{ exercise.title }}</span>
+              <span class="ex-difficulty" [class]="exercise.difficulty">
+                {{ exercise.difficulty === 'easy' ? 'Oson' : exercise.difficulty === 'medium' ? 'O\'rta' : 'Qiyin' }}
+              </span>
+              @if (isExerciseCompleted(exercise.id)) {
+              <span class="ex-done">✓</span>
+              }
+            </div>
+            }
+          </div>
+          <button class="btn-outline" type="button" (click)="setTab('exercises')">
+            Mashqlarni bajarish ->
+          </button>
+        </div>
+        }
+
+        <!-- Completion Button -->
+        @if (!isCompleted) {
+        <button class="btn-complete" type="button" [class.ready]="isAllRequirementsMet()"
+          [disabled]="!isAllRequirementsMet()" (click)="markAndContinue()">
+          @if (!isAllRequirementsMet()) {
+          {{ getCompletionPercentage() }}% - Barcha shartlarni tugating
+          } @else {
+          ✓ Darsni bajarildi deb belgilash
+          }
+        </button>
+        @if (!isAllRequirementsMet()) {
+        <div class="completion-hint">
+          Darsni to'liq bajarishingiz kerak. Barcha shartlarni belgilang va mashqlarni tugatib chiqing.
+        </div>
+        }
+        } @else {
+        <div class="completed-msg">
+          @if (justCompleted) {
+          <div class="congrats">🎉 Zo'r! +50 XP qo'shildi.</div>
+          } @else {
+          <div class="congrats">✓ Bu dars bajarilgan.</div>
+          }
+          @if (nextLesson && canContinueToNext()) {
+          <button class="btn-primary" type="button" (click)="goNext()">
+            Keyingi dars: {{ nextLesson.title }} ->
+          </button>
+          } @else if (nextLesson) {
+          <div class="disabled-next">
+            Keyingi dars: {{ nextLesson.title }}
+          </div>
+          } @else {
+          <a [routerLink]="['/lessons', module.id]" class="btn-primary">
+            Modul tugadi. Darslarga qaytish ->
+          </a>
+          }
+        </div>
+        }
+      </div>
+      }
+
+      @if (activeTab === 'homework') {
+      <div class="tab-content">
+        @if (lesson.homeworkTasks && lesson.homeworkTasks.length > 0) {
+        <div class="homework-section">
+          <h4>Uyga vazifa / AI tekshiruvchi topshiriqlar</h4>
+          <div class="homework-summary">
+            Bu dars uchun <strong>{{ lesson.homeworkTasks.length }}</strong> ta uyga vazifa mavjud.
+          </div>
+          <div class="homework-status">
+            ✅ Bajarilgan: {{ getHomeworkCompletedCount() }} / {{ lesson.homeworkTasks.length }}.
+            Ushbu uyga vazifalar to‘liq bajarilmasa, keyingi darsga o‘tish mumkin emas.
+          </div>
+          @for (task of lesson.homeworkTasks; track task.id) {
+          <div class="homework-card" [class.completed]="isHomeworkTaskComplete(task.id)">
+            <div class="homework-card-header">
+              <div>
+                <h5><span class="task-number">{{ task.order }}.</span> {{ task.title || 'Uyga vazifa' }}</h5>
+                <p class="homework-type-label">
+                  {{ task.type === 'code' ? 'Kod topshirig‘i' : task.type === 'quiz' ? 'Quiz savollari' : task.type ===
+                  'project' ? 'Loyiha tekshiruvi' : 'O‘qish vazifasi' }}
+                </p>
+                <p class="homework-desc">{{ task.description || 'Topshiriq tafsilotlari shu yerda ko‘rsatiladi.' }}</p>
+              </div>
+              <div class="homework-meta">
+                <span class="difficulty-badge" [class]="task.difficulty">
+                  {{ task.difficulty === 'oson' ? '🟢 Oson' : task.difficulty === 'orta' ? '🟡 O\'rta' : '🔴 Qiyin' }}
+                </span>
+                <span class="homework-xp">+{{ task.xp }} XP</span>
+              </div>
+            </div>
+
+            @if (task.type === 'code') {
+            <div class="homework-control">
+              <label>Kodni yozing va AI bilan tekshiring:</label>
+              <textarea rows="10" [(ngModel)]="codeAnswers[task.id]"
+                placeholder="HTML kodini shu yerga yozing..."></textarea>
+              @if (task.starterCode) {
+              <pre class="homework-starter-code"><code>{{ task.starterCode }}</code></pre>
+              }
+              <div class="expected-output">Kutilyotgan natija: {{ task.expectedOutput }}</div>
+              <button class="btn-outline" type="button" (click)="evaluateCodeTask(task)">
+                AI bilan tekshirish
+              </button>
+            </div>
+            }
+
+            @if (task.type === 'quiz') {
+            <div class="homework-control quiz-control">
+              @for (question of task.questions; track question.id) {
+              <div class="quiz-question">
+                <p>{{ question.question }}</p>
+                @for (option of question.options; track option) {
+                <label class="quiz-option">
+                  <input type="radio" [name]="task.id + '-' + question.id" [(ngModel)]="quizAnswers[question.id]"
+                    [value]="$index">
+                  {{ option }}
+                </label>
+                }
+              </div>
+              }
+              <button class="btn-outline" type="button" (click)="submitQuizTask(task)">
+                Javoblarni tekshirish
+              </button>
+            </div>
+            }
+
+            @if (task.type === 'project') {
+            <div class="homework-control project-control">
+              <p class="project-intro">Modul talablari bo'yicha quyidagi elementlarni bajarish kerak:</p>
+              @for (item of task.checkList; track item) {
+              <button type="button" class="checklist-item" [class.checked]="projectChecklist[task.id]?.[item]"
+                (click)="toggleProjectChecklist(task.id, item)">
+                <span>{{ item }}</span>
+                <span class="check-mark">
+                  @if (projectChecklist[task.id]?.[item]) {
+                  ✓
+                  } @else {
+
+                  }
+                </span>
+              </button>
+              }
+              <button class="btn-outline" type="button" (click)="submitProjectTask(task)">
+                Nazorat qilish
+              </button>
+            </div>
+            }
+
+            @if (task.type === 'reading') {
+            <div class="homework-control reading-control">
+              <p>{{ task.description }}</p>
+              <button class="btn-outline" type="button" [disabled]="isHomeworkTaskComplete(task.id)"
+                (click)="markReadingTaskComplete(task.id)">
+                Men o'qib chiqdim
+              </button>
+            </div>
+            }
+
+            @if (taskResults[task.id]) {
+            <div class="homework-result" [class.passed]="taskResults[task.id].passed">
+              <span>{{ taskResults[task.id].message }}</span>
+              <span class="homework-score">Score: {{ taskResults[task.id].score }}%</span>
+            </div>
+            }
+          </div>
+          }
+        </div>
+        } @else {
+        <div class="homework-section no-homework">
+          Bu dars uchun hozircha uyga vazifa yo'q. Lekin amaliy topshiriqni shu yerda bajaring.
+        </div>
+        }
+      </div>
+      }
+
+
+      @if (activeTab === 'exercises' && lesson.exercises && lesson.exercises.length > 0) {
+      <div class="tab-content">
+        <div class="exercises-list">
+          @for (exercise of lesson.exercises; track exercise.id; let i = $index) {
+          <div class="exercise-card" [class.completed]="isExerciseCompleted(exercise.id)">
+            <div class="exercise-header">
+              <div class="exercise-title">
+                <span class="exercise-num">{{ i + 1 }}.</span>
+                <h4>{{ exercise.title }}</h4>
+                <span class="difficulty" [class]="exercise.difficulty">
+                  {{ exercise.difficulty }}
+                </span>
+              </div>
+              @if (isExerciseCompleted(exercise.id)) {
+              <span class="exercise-completed">✓ Bajarildi</span>
+              }
+            </div>
+            <p class="exercise-desc">{{ exercise.description }}</p>
+            @if (exercise.solution) {
+            <div class="exercise-solution">
+              <button class="solution-toggle" type="button" (click)="toggleExerciseSolution(exercise.id)">
+                {{ showExerciseSolution === exercise.id ? 'Yechimni yashirish' : 'Yechimni ko\'rish' }}
+              </button>
+              @if (showExerciseSolution === exercise.id) {
+              <pre class="solution-code"><code>{{ exercise.solution }}</code></pre>
+              }
+            </div>
+            }
+            <button class="btn-exercise" type="button" [class.completed]="isExerciseCompleted(exercise.id)"
+              (click)="markExerciseComplete(exercise.id)">
+              {{ isExerciseCompleted(exercise.id) ? '✓ Bajarildi (+25 XP)' : 'Mashqni bajarildi deb belgilash (+25 XP)'
+              }}
+            </button>
+          </div>
+          }
+        </div>
+      </div>
+      }
+    </article>
+
+    <aside class="lesson-sidebar">
+      <div class="sidebar-card">
+        <div class="sidebar-card-title">{{ module.icon }} {{ module.title.split(' - ')[0].trim() }}</div>
+        <div class="module-lessons-list">
+          @for (l of module.lessons; track l.id; let i = $index) {
+          <a [routerLink]="['/lesson', module.id, l.id]" class="mini-lesson" [class.active]="l.id === lesson.id"
+            [class.done]="isLessonCompleted(l.id)">
+            <span class="mini-num">
+              {{ isLessonCompleted(l.id) ? 'OK' : (i + 1) }}
+            </span>
+            <span class="mini-title">{{ l.title }}</span>
+          </a>
+          }
+        </div>
+      </div>
+
+      <div class="nav-card">
+        @if (prevLesson) {
+        <a [routerLink]="['/lesson', module.id, prevLesson.id]" class="nav-btn prev">
+          <span class="nav-dir">&lt;- Oldingi</span>
+          <span class="nav-name">{{ prevLesson.title }}</span>
+        </a>
+        }
+        @if (nextLesson) {
+        <a [routerLink]="['/lesson', module.id, nextLesson.id]" class="nav-btn next">
+          <span class="nav-dir">Keyingi -></span>
+          <span class="nav-name">{{ nextLesson.title }}</span>
+        </a>
+        }
+      </div>
+
+      @if (module.project) {
+      <div class="sidebar-card project-summary">
+        <div class="sidebar-card-title">Modul loyihasi</div>
+        <h3>{{ module.project.title }}</h3>
+        <p>{{ module.project.description }}</p>
+        <div class="project-requirements">
+          <h4>Talablar</h4>
+          @for (req of module.project.requirements; track req) {
+          <div class="project-requirement">• {{ req }}</div>
+          }
+        </div>
+        <div class="project-rubric">
+          <h4>Baholash mezoni</h4>
+          @for (item of module.project.rubric; track item.criterion) {
+          <div class="rubric-item">
+            <span>{{ item.criterion }}</span>
+            <strong>{{ item.points }} ball</strong>
+          </div>
+          }
+        </div>
+        <div class="project-actions">
+          @if (isModuleProjectCompleted()) {
+          <span class="project-done">Loyiha yakunlandi</span>
+          } @else {
+          <button class="btn-primary" type="button" [disabled]="!areAllModuleLessonsCompleted()"
+            (click)="markModuleProjectComplete()">
+            Modul loyihasini tugatish
+          </button>
+          }
+          @if (projectStatus) {
+          <div class="project-status">{{ projectStatus }}</div>
+          }
+        </div>
+      </div>
+      }
+    </aside>
+  </div>
+</div>
+
+} @else {
+<div class="not-found container">
+  <h2>Dars topilmadi</h2>
+  <a routerLink="/lessons" class="btn-primary">Darslarga qaytish</a>
+</div>
+}

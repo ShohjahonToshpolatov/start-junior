@@ -1,0 +1,44 @@
+<nav class="navbar">
+  <a routerLink="/" class="navbar-logo">
+    <span class="logo-icon">SJ</span>
+    <span class="logo-text">Start Junior</span>
+  </a>
+
+  <ul class="nav-links" [class.open]="menuOpen">
+    <li>
+      <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" (click)="closeMenu()">Bosh
+        sahifa</a>
+    </li>
+    <li>
+      <a routerLink="/assessment" routerLinkActive="active" (click)="closeMenu()" class="nav-assessment">
+        📊 Sizni Darajangiz
+      </a>
+    </li>
+    <li>
+      <a routerLink="/lessons" routerLinkActive="active" (click)="closeMenu()">
+        Darslar
+        @if (progress > 0) {
+        <span class="nav-badge">{{ progress }}%</span>
+        }
+      </a>
+    </li>
+    <li>
+      <a routerLink="/certificate" routerLinkActive="active" (click)="closeMenu()">Sertifikat</a>
+    </li>
+    <li>
+      <a routerLink="/account" routerLinkActive="active" (click)="closeMenu()">
+        @if (account) {
+        <span class="nav-avatar">{{ account.fullName.charAt(0).toUpperCase() }}</span>
+        } @else {
+        Account
+        }
+      </a>
+    </li>
+  </ul>
+
+  <button class="hamburger" type="button" [class.open]="menuOpen" (click)="toggleMenu()" aria-label="Menyu">
+    <span></span>
+    <span></span>
+    <span></span>
+  </button>
+</nav>

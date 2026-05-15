@@ -1,0 +1,135 @@
+﻿<div class="certificate-page">
+  <div class="container">
+    @if (loading) {
+    <div class="loading">
+      <div class="spinner"></div>
+      <p>Certificate tayyorlanmoqda...</p>
+    </div>
+    } @else if (!certificate) {
+    <div class="certificate-verify-card">
+      <h2>Sertifikat uchun ism va familiyangizni qayta kiriting</h2>
+      <p>Bu ism rasmiy sertifikatga chiqariladi. To'liq va to'g'ri yozing.</p>
+
+      <label for="confirmName">Ism familiya</label>
+      <input id="confirmName" name="confirmName" type="text" [(ngModel)]="confirmName"
+        placeholder="Ali Valiyev" />
+
+      @if (nameError) {
+      <div class="form-message error">{{ nameError }}</div>
+      }
+      @if (error) {
+      <div class="form-message error">{{ error }}</div>
+      }
+
+      <button class="btn-primary" type="button" (click)="confirmNameAndLoad()">
+        Sertifikatni tayyorlash
+      </button>
+
+      <div class="certificate-help">
+        <p>Hisobingizda saqlangan ism: <strong>{{ accountName }}</strong></p>
+        <p>Agar ma'lumotlar noto'g'ri bo'lsa, shu yerda to'g'rilang.</p>
+      </div>
+
+      <div class="certificate-actions">
+        <a routerLink="/account" class="btn-outline">Account sahifasiga qaytish</a>
+        <a routerLink="/lessons" class="btn-outline">Darslarga qaytish</a>
+      </div>
+    </div>
+    } @else if (certificate) {
+    <div class="certificate" id="certificate">
+      <div class="certificate-header">
+        <div class="logo">
+          <div class="logo-icon">🚀</div>
+          <div class="logo-text">
+            <h1>Start Junior</h1>
+            <p>Frontend Dasturlash Kursi</p>
+          </div>
+        </div>
+        <div class="certificate-badge">
+          <span class="badge-text">Muvaffaqiyatli Yakunlandi</span>
+        </div>
+      </div>
+
+      <div class="certificate-body">
+        <div class="certificate-title">
+          <h2>TAMOMLASH SERTIFIKATI</h2>
+        </div>
+
+        <div class="certificate-content">
+          <p class="intro-text">Bu sertifikat bilan tasdiqlanadiki,</p>
+          <div class="recipient-name">
+            <h3>{{ certificate.userName }}</h3>
+          </div>
+          <p class="achievement-text">muvaffaqiyatli yakunladi</p>
+
+          <div class="course-name">
+            <h4>3 Oylik Frontend Dasturlash Kursi</h4>
+            <p>Start Junior Akademiyasi</p>
+          </div>
+
+          <div class="stats-grid">
+            <div class="stat-item">
+              <div class="stat-value">{{ certificate.completionPercent }}%</div>
+              <div class="stat-label">Tugagan</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-value">{{ certificate.completedLessons }}</div>
+              <div class="stat-label">Dars</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-value">{{ certificate.xp }}</div>
+              <div class="stat-label">XP</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="certificate-footer">
+        <div class="signature-section">
+          <div class="signature">
+            <div class="signature-line"></div>
+            <p>Start Junior Jamoasi</p>
+            <small>Instructor</small>
+          </div>
+          <div class="date">
+            <p>{{ certificate.issuedAt | date:'dd.MM.yyyy' }}</p>
+            <small>Berilgan sana</small>
+          </div>
+        </div>
+        <div class="certificate-id">
+          <small>ID: {{ certificate.certificateId }}</small>
+        </div>
+      </div>
+
+      <div class="decorative-elements">
+        <div class="star star-1">⭐</div>
+        <div class="star star-2">⭐</div>
+        <div class="star star-3">⭐</div>
+        <div class="star star-4">⭐</div>
+      </div>
+    </div>
+
+    <div class="certificate-actions">
+      <button (click)="printCertificate()" class="btn-primary">
+        <span>🖨️</span> Chop etish
+      </button>
+      <button (click)="downloadCertificate()" class="btn-outline">
+        <span>📥</span> Yuklab olish
+      </button>
+      <a routerLink="/lessons" class="btn-outline">
+        <span>📚</span> Darslarga qaytish
+      </a>
+    </div>
+
+    <div class="share-section">
+      <h3>Ulashingiz mumkin! 🎉</h3>
+      <p>LinkedIn, Telegram yoki boshqa ijtimoiy tarmoqlarda baham ko'ring</p>
+      <div class="share-buttons">
+        <button class="share-btn linkedin">LinkedIn</button>
+        <button class="share-btn telegram">Telegram</button>
+        <button class="share-btn twitter">Twitter</button>
+      </div>
+    </div>
+    }
+  </div>
+</div>

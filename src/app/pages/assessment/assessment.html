@@ -1,0 +1,272 @@
+<div class="assessment-container">
+    <!-- WELCOME STAGE -->
+    @if (stage === 'welcome') {
+    <div class="stage welcome-stage">
+        <div class="welcome-content">
+            <h1>🎯 Sizni Darajangizni Aniqlang</h1>
+            <p class="subtitle">HTML, CSS, JavaScript, va Git bo'yicha professional test</p>
+
+            <div class="features">
+                <div class="feature">
+                    <span class="icon">📚</span>
+                    <h3>4 ta Teknologiya</h3>
+                    <p>HTML, CSS, JavaScript, Git</p>
+                </div>
+
+                <div class="feature">
+                    <span class="icon">⏱️</span>
+                    <h3>Timed Test</h3>
+                    <p>Har bir savol uchun limited vaqt</p>
+                </div>
+
+                <div class="feature">
+                    <span class="icon">🎬</span>
+                    <h3>Kamera Monitoring</h3>
+                    <p>Test ishonchisiga ruxsat beriladi</p>
+                </div>
+
+                <div class="feature">
+                    <span class="icon">📊</span>
+                    <h3>Detailed Results</h3>
+                    <p>Har bir skill uchun batafsil natija</p>
+                </div>
+            </div>
+
+            <div class="info-box">
+                <p><strong>⚠️ Muhim:</strong> Test davomida:</p>
+                <ul>
+                    <li>✓ Nomad davom etish kerak</li>
+                    <li>✓ Kamera yonib turishi kerak</li>
+                    <li>✓ 30 soniyadan ko'p inaktiv bo'lsa, test to'xtadi</li>
+                    <li>✓ Har bir savol uchun vaqt chegarasi bor</li>
+                </ul>
+            </div>
+
+            <button class="btn btn-primary btn-large" (click)="startAssessment()">
+                Testni Boshlash
+            </button>
+        </div>
+    </div>
+    }
+
+    <!-- CAMERA REQUEST STAGE -->
+    @if (stage === 'camera-request') {
+    <div class="stage camera-stage">
+        <div class="camera-content">
+            <h2>📹 Kamera Ruxsati</h2>
+            <p>Test davomida kamera faolligini nazorat qilish uchun kerak</p>
+
+            <div class="camera-preview">
+                @if (cameraActive) {
+                <video #videoElement autoplay playsinline muted></video>
+                <div class="camera-indicator active">
+                    <span class="pulse"></span> Kamera faol
+                </div>
+                } @else {
+                <div class="camera-placeholder">
+                    <span class="icon">📹</span>
+                    <p>Kamera qo'shilgan</p>
+                </div>
+                }
+            </div>
+
+            @if (permissionDenied) {
+            <div class="alert alert-warning">
+                <p>❌ Kamera ruxsati berilmadi. Brauzer sozlamalari o'rtasida ruxsat bering.</p>
+            </div>
+            }
+
+            <div class="button-group">
+                @if (!cameraActive) {
+                <button class="btn btn-primary" (click)="requestCameraAccess()">
+                    Kamera Ruxsatini Berish
+                </button>
+                <button class="btn btn-secondary" (click)="skipCamera()">
+                    Kamerasiz Davom Etish
+                </button>
+                } @else {
+                <button class="btn btn-primary" (click)="skipCamera()">
+                    Testni Boshlash
+                </button>
+                }
+            </div>
+        </div>
+    </div>
+    }
+
+    <!-- QUIZ STAGE -->
+    @if (stage === 'quiz') {
+    <div class="stage quiz-stage">
+        <div class="quiz-header">
+            <div class="level-selector">
+                @for (level of levels; track level) {
+                <div class="level-badge" [class.active]="level === currentLevel"
+                    [class.completed]="completedLevels.has(level)">
+                    {{ getLevelLabel(level) }}
+                </div>
+                }
+            </div>
+
+            <div class="progress-info">
+                <span class="progress-text">
+                    Savol {{ currentQuestionIndex + 1 }} / {{ currentQuestions.length }}
+                </span>
+                <div class="progress-bar">
+                    <div class="progress-fill"
+                        [style.width.%]="((currentQuestionIndex + 1) / currentQuestions.length) * 100">
+                    </div>
+                </div>
+            </div>
+
+            <div class="timer" [class.warning]="timeRemaining < 10">
+                ⏱️ {{ timeRemaining }}s
+            </div>
+
+            <div class="total-timer" [class.warning]="totalTimeRemaining < 300">
+                🕒 Total: {{ totalTimeFormatted }}
+            </div>
+        </div>
+
+        @if (currentQuestion) {
+        <div class="quiz-content">
+            <div class="question-header">
+                <h3>{{ currentQuestion.question }}</h3>
+                @if (currentQuestion.description) {
+                <p class="description">{{ currentQuestion.description }}</p>
+                }
+                <div class="question-meta">
+                    <span class="difficulty" [class]="'difficulty-' + currentQuestion.difficulty">
+                        {{ currentQuestion.difficulty | titlecase }}
+                    </span>
+                    <span class="type">{{ currentQuestion.type | titlecase }}</span>
+                </div>
+            </div>
+
+            <!-- MULTIPLE CHOICE -->
+            @if (currentQuestion.type === 'multiple-choice' && currentQuestion.options) {
+            <div class="options">
+                @for (option of currentQuestion.options; track option) {
+                <label class="option-label">
+                    <input type="radio" name="answer" [value]="option" [(ngModel)]="selectedAnswer"
+                        class="option-input">
+                    <span class="option-text">{{ option }}</span>
+                </label>
+                }
+            </div>
+            }
+
+            <!-- PRACTICAL -->
+            @if (currentQuestion.type === 'practical') {
+            <div class="practical-input">
+                <p class="instruction">Quyidagi misolni o'z so'zlari bilan yozing:</p>
+                <textarea [(ngModel)]="selectedAnswer" placeholder="Javobingizni yozing..." rows="6">
+              </textarea>
+            </div>
+            }
+
+            <!-- CODE REVIEW -->
+            @if (currentQuestion.type === 'code-review') {
+            <div class="code-review-input">
+                <p class="instruction">Xatoni toping va tavsiflang:</p>
+                <textarea [(ngModel)]="selectedAnswer" placeholder="Xatoning tavsiflang..." rows="6">
+              </textarea>
+            </div>
+            }
+
+            <!-- ACTIONS -->
+            <div class="button-group">
+                <button class="btn btn-secondary" (click)="skipQuestion()">
+                    O'tkazib Yuborish
+                </button>
+                <button class="btn btn-primary" [disabled]="!selectedAnswer" (click)="submitAnswer()">
+                    Javobni Yuborish
+                </button>
+            </div>
+        </div>
+        }
+    </div>
+    }
+
+    <!-- RESULTS STAGE -->
+    @if (stage === 'results') {
+    <div class="stage results-stage">
+        <div class="results-content">
+            @if (!inactivityDetected) {
+            <h2>✅ Test Yakunlandi!</h2>
+
+            <div class="summary">
+                <p class="total-time">⏱️ Jami vaqt: {{ timeSpent }}s</p>
+            </div>
+
+            <div class="results-grid">
+                @for (level of levels; track level) {
+                <div class="result-card" [style.border-left-color]="getScoreColor(userLevels[level])">
+                    <h3>{{ getLevelLabel(level) }}</h3>
+                    <div class="score-display">
+                        <span class="score" [style.color]="getScoreColor(userLevels[level])">
+                            {{ userLevels[level] }}%
+                        </span>
+                    </div>
+                    <div class="score-bar">
+                        <div class="score-fill" [style.width.%]="userLevels[level]"
+                            [style.background-color]="getScoreColor(userLevels[level])">
+                        </div>
+                    </div>
+                    <p class="level-description">
+                        @if (userLevels[level] >= 80) {
+                        Juda yaxshi! 🎉
+                        } @else if (userLevels[level] >= 60) {
+                        Yaxshi, lekin tahlil kerak 📚
+                        } @else {
+                        Boshidan boshla 💪
+                        }
+                    </p>
+                </div>
+                }
+            </div>
+
+            <div class="recommendations">
+                <h3>📋 Tavsiyalar:</h3>
+                <ul>
+                    @if (userLevels.html < 70) { <li>HTML bo'yicha darslarni qayta ko'rib chiqing</li>
+                        }
+                        @if (userLevels.css < 70) { <li>CSS Flexbox va Grid bo'yicha ko'proq harakat qiling</li>
+                            }
+                            @if (userLevels.js < 70) { <li>JavaScript amaliy loyihalar bilan mashq qiling</li>
+                                }
+                                @if (userLevels.git < 70) { <li>Git comandlarini terminal orqali marta-marta mashq
+                                    qiling</li>
+                                    }
+                </ul>
+            </div>
+
+            <div class="button-group">
+                <button class="btn btn-secondary" (click)="restartAssessment()">
+                    Testni Qayta Boshlash
+                </button>
+                <button class="btn btn-primary" (click)="goHome()">
+                    Bosh Sahifaga Qaytish
+                </button>
+            </div>
+            } @else {
+            <div class="alert alert-error">
+                @if (testFailedByNavigation) {
+                <h2>❌ Test Bekor Qilindi!</h2>
+                <p>Test davomida siz boshqa sahifaga otib ketchingiz.</p>
+                <p><strong>Qoida:</strong> Test davomida boshqa sahifaga otish mumkin emas!</p>
+                } @else {
+                <h2>⚠️ Test To'xtatildi</h2>
+                <p>Test davomida 30 soniya inaktiv qoldingiz.</p>
+                }
+                <p style="margin-top: 1.5rem; color: #333;">
+                    Qayta boshlash uchun quyidagi tugmasini bosing:
+                </p>
+                <button class="btn btn-primary" style="margin-top: 1rem;" (click)="restartAssessment()">
+                    🔄 Testni Qayta Boshlash
+                </button>
+            </div>
+            }
+        </div>
+    </div>
+    }
+</div>

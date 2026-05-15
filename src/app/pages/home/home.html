@@ -1,0 +1,190 @@
+<section class="hero">
+  <div class="hero-bg">
+    <div class="grid-overlay"></div>
+  </div>
+
+  <div class="container hero-content">
+    <div class="hero-badge tag">O'zbek tilida bepul 3 oylik IT roadmap</div>
+
+    <h1 class="hero-title">
+      <span class="line-1">0 dan</span>
+      <span class="line-2">Junior</span>
+      <span class="line-3">3 oyda.</span>
+    </h1>
+
+    <p class="hero-desc">
+      VS Code skachat qilishdan boshlab HTML, CSS, JavaScript, Node.js backend,
+      account yaratish va Git/GitHub final ish oqimigacha.
+    </p>
+
+    <div class="hero-cta">
+      <a routerLink="/account" class="btn-primary btn-lg">Bepul account yaratish</a>
+      <a routerLink="/lessons" class="btn-outline btn-lg">Darslarni ko'rish</a>
+    </div>
+
+    <div class="hero-code">
+      <div class="code-header">
+        <span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span>
+        <span class="code-title">start-junior.js</span>
+      </div>
+      <div class="code-body">
+        <div class="code-line"><span class="kw">const</span> goal = <span class="str">'Junior Developer'</span>;</div>
+        <div class="code-line"><span class="kw">const</span> months = <span class="str">3</span>;</div>
+        <div class="code-line"><span class="kw">const</span> price = <span class="str">'Bepul'</span>;</div>
+        <div class="code-line comment">// Har dars: nazariya + kod + topshiriq + video link</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="stats-row">
+      @for (stat of stats; track stat.label) {
+        <div class="stat-item">
+          <div class="stat-value">{{ stat.value }}</div>
+          <div class="stat-label">{{ stat.label }}</div>
+          <div class="stat-sub">{{ stat.sub }}</div>
+        </div>
+      }
+    </div>
+  </div>
+</section>
+
+<section class="modules-section">
+  <div class="container">
+    <div class="section-header">
+      <span class="tag">Dastur</span>
+      <h2>Nima o'rganasiz?</h2>
+      <p>Har modul yakunida real amaliy natija bor.</p>
+    </div>
+
+    <div class="modules-grid">
+      @for (module of modules; track module.id) {
+        <a [routerLink]="['/lessons', module.id]" class="module-card">
+          <div class="module-number">0{{ module.order }}</div>
+          <div class="module-icon" [style.background]="module.color + '15'" [style.border-color]="module.color + '40'">
+            {{ module.icon }}
+          </div>
+          <h3 class="module-title">{{ module.title }}</h3>
+          <p class="module-desc">{{ module.description }}</p>
+          <div class="module-footer">
+            <span class="module-meta">
+              <span>{{ module.lessons.length }} dars</span>
+              <span class="dot"></span>
+              <span>{{ module.totalHours }}</span>
+            </span>
+            <span class="module-progress">{{ getCompletedForModule(module.id) }}/{{ module.lessons.length }} bajarildi</span>
+          </div>
+          <div class="module-arrow">-></div>
+        </a>
+      }
+    </div>
+  </div>
+</section>
+
+<section class="roadmap-section" id="roadmap">
+  <div class="container">
+    <div class="section-header">
+      <span class="tag">Jadval</span>
+      <h2>3 oylik yo'l xarita</h2>
+      <p>Kuniga 2-3 soat barqaror mashq qilsangiz yetarli.</p>
+    </div>
+
+    <div class="roadmap-timeline">
+      @for (step of roadmap; track step.week; let i = $index) {
+        <div class="roadmap-item">
+          <div class="roadmap-connector">
+            <div class="roadmap-dot" [style.background]="step.color" [style.box-shadow]="'0 0 20px ' + step.color + '80'"></div>
+            @if (i < roadmap.length - 1) {
+              <div class="roadmap-line"></div>
+            }
+          </div>
+          <div class="roadmap-content">
+            <div class="roadmap-week" [style.color]="step.color">{{ step.week }}</div>
+            <div class="roadmap-title">{{ step.title }}</div>
+            <p class="roadmap-desc">{{ step.desc }}</p>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+</section>
+
+<section class="why-section">
+  <div class="container">
+    <div class="why-grid">
+      <div class="why-text">
+        <span class="tag">Bismillah</span>
+        <h2>O'rganish yo'li aniq, narxi 0 so'm.</h2>
+        <p>
+          Start Junior yangi boshlovchi uchun tartibli yo'l beradi: avval kompyuterni tayyorlash,
+          keyin frontend asoslari, keyin Node.js backend va oxirida GitHub portfolio.
+        </p>
+        <div class="why-features">
+          <div class="why-feat"><span>OK</span> O'zbek tilida</div>
+          <div class="why-feat"><span>OK</span> Har darsda topshiriq</div>
+          <div class="why-feat"><span>OK</span> Video link joyi bor</div>
+          <div class="why-feat"><span>OK</span> Account yaratish bor</div>
+          <div class="why-feat"><span>OK</span> Node.js backend bor</div>
+          <div class="why-feat"><span>OK</span> Git bilan tugaydi</div>
+        </div>
+      </div>
+
+      <div class="why-card">
+        <div class="why-terminal">
+          <div class="terminal-header">
+            <span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span>
+            <span>terminal</span>
+          </div>
+          <div class="terminal-body">
+            <div class="t-line"><span class="t-prompt">$</span> npm run backend</div>
+            <div class="t-line success">API: http://localhost:3000</div>
+            <div class="t-line"><span class="t-prompt">$</span> npm start</div>
+            <div class="t-line success">Angular: http://localhost:4200</div>
+            <div class="t-line link">Final: GitHub Pages + portfolio</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="faq-section" id="faq">
+  <div class="container">
+    <div class="section-header">
+      <span class="tag">FAQ</span>
+      <h2>Ko'p so'raladigan savollar</h2>
+    </div>
+
+    <div class="faq-list">
+      @for (faq of faqs; track faq.q; let i = $index) {
+        <div class="faq-item" [class.open]="openFaq === i">
+          <button class="faq-question" type="button" (click)="toggleFaq(i)">
+            <span>{{ faq.q }}</span>
+            <span class="faq-icon">{{ openFaq === i ? '-' : '+' }}</span>
+          </button>
+          @if (openFaq === i) {
+            <div class="faq-answer">{{ faq.a }}</div>
+          }
+        </div>
+      }
+    </div>
+  </div>
+</section>
+
+<section class="cta-section">
+  <div class="container">
+    <div class="cta-box">
+      <h2>Bugun boshlang.</h2>
+      <p>Account yarating, birinchi darsni oching va 3 oylik yo'lni boshlab yuboring.</p>
+      <a routerLink="/account" class="btn-primary btn-lg">Account yaratish</a>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="container footer-inner">
+    <div class="footer-logo"><span class="logo-bracket">&lt;</span>Start Junior<span class="logo-bracket">/&gt;</span></div>
+    <p class="footer-text">Bepul. O'zbek tilida. Clean code bilan.</p>
+    <p class="footer-copy">2026 Start Junior</p>
+  </div>
+</footer>

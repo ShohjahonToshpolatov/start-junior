@@ -1,0 +1,74 @@
+{
+  "11aad7cd-5536-4bc3-a2c6-eff720046181": {
+    "completedLessons": [
+      "js-4",
+      "css-3",
+      "setup-1",
+      "setup-2",
+      "setup-3",
+      "setup-4",
+      "setup-5",
+      "html-1",
+      "html-2",
+      "html-3",
+      "html-4",
+      "html-5",
+      "html-6",
+      "html-7",
+      "css-1",
+      "css-2",
+      "css-4",
+      "css-5",
+      "css-6",
+      "css-7",
+      "js-1",
+      "js-2",
+      "js-3",
+      "js-5",
+      "js-6",
+      "js-7",
+      "js-8",
+      "backend-1",
+      "backend-2",
+      "backend-3",
+      "backend-4",
+      "backend-5",
+      "backend-6",
+      "git-1",
+      "git-2",
+      "git-3",
+      "git-4",
+      "git-5",
+      "git-6"
+    ],
+    "xp": 1950,
+    "streak": 1
+  },
+  "ca26d66f-c94c-4eaa-8559-c5439cd786eb": {
+    "completedLessons": [
+      "setup-1",
+      "setup-2",
+      "setup-3",
+      "setup-4",
+      "html-1",
+      "html-2"
+    ],
+    "xp": 300,
+    "streak": 1
+  },
+  "61ee7512-60cc-4e75-9f1b-c8be7c9a1967": {
+    "completedLessons": [
+      "setup-1",
+      "setup-2",
+      "setup-3",
+      "setup-4",
+      "html-1",
+      "html-2",
+      "html-3"
+    ],
+    "completedExercises": [],
+    "completedProjects": [],
+    "xp": 350,
+    "streak": 1
+  }
+}

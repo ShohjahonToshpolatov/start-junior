@@ -1,0 +1,34 @@
+[
+  {
+    "id": "5b2b08fd-e52e-468a-a030-e0ee4154dbbc",
+    "fullName": "Shohjahon Toshpolatov",
+    "email": "shohjahon0192@gmail.com",
+    "goal": "3 oyda Junior Frontend Developer bo'lish",
+    "createdAt": "2026-05-11T10:37:39.935Z",
+    "passwordHash": "5a970bda62a704a1595914a0162e86d6355e2ea7d6cc22f9c31689ad34a49552"
+  },
+  {
+    "id": "11aad7cd-5536-4bc3-a2c6-eff720046181",
+    "fullName": "Shohjahon Toshpolatov",
+    "email": "sxayr90@gmail.com",
+    "goal": "3 oyda Junior Frontend Developer bo'lish",
+    "createdAt": "2026-05-11T11:30:02.251Z",
+    "passwordHash": "5a970bda62a704a1595914a0162e86d6355e2ea7d6cc22f9c31689ad34a49552"
+  },
+  {
+    "id": "ca26d66f-c94c-4eaa-8559-c5439cd786eb",
+    "fullName": "Ts dsa",
+    "email": "telecomtv@gmail.com",
+    "goal": "3 oyda Junior Frontend Developer bo'lish",
+    "createdAt": "2026-05-11T11:43:38.936Z",
+    "passwordHash": "b5e57b990499baf88832b158a9a72a081be5f464b245ece54b1b990d9ae9e655"
+  },
+  {
+    "id": "61ee7512-60cc-4e75-9f1b-c8be7c9a1967",
+    "fullName": "sad asd",
+    "email": "toshpolatov00@gmail.com",
+    "goal": "3 oyda Junior Frontend Developer bo'lish",
+    "createdAt": "2026-05-13T09:01:24.809Z",
+    "passwordHash": "5a970bda62a704a1595914a0162e86d6355e2ea7d6cc22f9c31689ad34a49552"
+  }
+]

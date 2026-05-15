@@ -1,0 +1,54 @@
+<main class="account-page">
+  <section class="account-hero container">
+    <div>
+      <span class="tag">Bepul account</span>
+      <h1>Progressingizni saqlang va 3 oylik yo'l xaritada yuring.</h1>
+      <p>
+        Account yaratish bepul. Backend server yoqilgan bo'lsa ma'lumot API orqali,
+        yoqilmagan bo'lsa demo rejimda localStorage orqali saqlanadi.
+      </p>
+    </div>
+
+    <div class="account-panel">
+      @if (account) {
+      <div class="profile-card">
+        <div class="avatar">{{ account.fullName.charAt(0).toUpperCase() }}</div>
+        <h2>{{ account.fullName }}</h2>
+        <p>{{ account.email }}</p>
+        <div class="goal-box">{{ account.goal }}</div>
+        <a routerLink="/lessons" class="btn-primary">Darslarni davom ettirish</a>
+        <a routerLink="/certificate" class="btn-outline">🎖️ Sertifikat ko'rish</a>
+        <button class="btn-outline" (click)="logout()">Chiqish</button>
+      </div>
+      } @else {
+      <form class="register-form" (ngSubmit)="register()">
+        <h2>Account yaratish</h2>
+
+        <label for="fullName">Ism familiya</label>
+        <input id="fullName" name="fullName" type="text" [(ngModel)]="form.fullName" placeholder="Ali Valiyev" required>
+
+        <label for="email">Email</label>
+        <input id="email" name="email" type="email" [(ngModel)]="form.email" placeholder="ali@gmail.com" required>
+
+        <label for="password">Parol</label>
+        <input id="password" name="password" type="password" [(ngModel)]="form.password" placeholder="Kamida 8 belgi"
+          required minlength="8">
+
+        <label for="goal">Maqsad</label>
+        <textarea id="goal" name="goal" [(ngModel)]="form.goal" rows="3"></textarea>
+
+        @if (error) {
+        <div class="form-message error">{{ error }}</div>
+        }
+        @if (success) {
+        <div class="form-message success">{{ success }}</div>
+        }
+
+        <button class="btn-primary" type="submit" [disabled]="loading">
+          {{ loading ? 'Yaratilmoqda...' : 'Bepul account yaratish' }}
+        </button>
+      </form>
+      }
+    </div>
+  </section>
+</main>
